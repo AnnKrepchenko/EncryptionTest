@@ -1,7 +1,6 @@
 package encrypt.test.com.encryptiontext.net;
 
 
-import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -9,8 +8,8 @@ import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-import encrypt.test.com.encryptiontext.MainActivity;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,12 +32,14 @@ public final class NetManager {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
-
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient build = new OkHttpClient.Builder()
                 .writeTimeout(8, TimeUnit.SECONDS)
                 .readTimeout(8, TimeUnit.SECONDS)
                 .connectTimeout(8, TimeUnit.SECONDS)
+                .addInterceptor(interceptor)
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -50,19 +51,18 @@ public final class NetManager {
         return retrofit.create(API.class);
     }
 
-    public void sendEncryptedString(String text){
+    public void sendEncryptedString(String text) {
         Call<String> responseCall = api.sendEncryptedString(text);
         responseCall.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     Log.d(TAG, response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.d(TAG, "error = " + t.getMessage());
             }
         });
     }

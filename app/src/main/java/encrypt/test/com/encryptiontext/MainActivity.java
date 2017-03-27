@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 binding.resultTextView.setText(encryptedText);
                 netManager.sendEncryptedString(encryptedText);
 
-               // Log.d(TAG, cryptoManager.doDecrypt(text));
+                binding.decryptedTextView.setText("Decrypted  = " + cryptoManager.doDecrypt(encryptedText));
                 break;
         }
     }
